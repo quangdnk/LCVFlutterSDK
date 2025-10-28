@@ -65,7 +65,7 @@ class ApiClient implements IApiClient {
   Future<Result> post(
     String path,
     SdkModelRequest? queryParameters, {
-    dynamic? data,
+    dynamic data,
     Options? options,
   }) async {
     try {
