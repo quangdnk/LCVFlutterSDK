@@ -1,0 +1,9 @@
+{
+    "data": {
+        "vin": "VIN123456789",
+        "make": "Toyota",
+        "model": "Camry",
+        "status": "active"
+    },
+    "statusCode": 200
+}

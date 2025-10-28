@@ -1,176 +1,133 @@
+import 'package:LCVFlutterSDK/core/constants/http_constants.dart';
+import 'package:LCVFlutterSDK/core/models/sdk_model_request.dart';
+import 'package:LCVFlutterSDK/core/network/result.dart';
 import 'package:dio/dio.dart';
-import 'package:logger/web.dart';
 import '../config/sdk_config.dart';
-import '../constants/http_constants.dart';
-import '../errors/api_exception.dart';
-import '../errors/network_exception.dart';
-import '../ultis/logger.dart';
-import 'interceptors/auth_interceptor.dart';
-import 'interceptors/logging_interceptor.dart';
+import '../config/sdk_session.dart';
 
-typedef JsonConverter<T> = T Function(dynamic json);
+abstract class IApiClient {
+  Future<Result> get(
+    String path, {
+    SdkModelRequest? queryParameters,
+    Options? options,
+  });
+  Future<Result> post(
+    String path,
+    SdkModelRequest? queryParameters, {
+    dynamic data,
+    Options? options,
+  });
+}
 
-class ApiClient {
-  final Dio dio;
-  final SdkConfig config;
-  final SdkLogger logger;
-  final AuthInterceptor _authInterceptor;
+class ApiClient implements IApiClient {
+  final Dio _dio;
 
-  ApiClient._(this.dio, this.config, this.logger, this._authInterceptor);
+  ApiClient(SdkConfig config)
+    : _dio = Dio(
+        BaseOptions(
+          baseUrl: config.env.endpoint(),
+          connectTimeout: config.timeout,
+          receiveTimeout: config.timeout,
+          headers: HttpConstants.defaultHeaders,
+        ),
+      );
 
-  factory ApiClient({
-    required SdkConfig config,
-    TokenProvider? tokenProvider,
-    String? initialToken,
-    Map<String, dynamic>? defaultHeaders,
-  }) {
-    final options = BaseOptions(
-      baseUrl: config.baseUrl,
-      connectTimeout: config.timeout,
-      receiveTimeout: config.timeout,
-      headers: {...HttpConstants.defaultHeaders, ...?defaultHeaders},
-    );
-
-    final dio = Dio(options);
-
-    final logger = SdkLogger(enabled: config.enableLogging);
-
-    final auth = AuthInterceptor(
-      tokenProvider: tokenProvider ?? (() => null),
-      initialToken: initialToken,
-    );
-
-    // Add interceptors: order matters (auth first? we add auth before logging so logs include auth header if present)
-    dio.interceptors.add(auth);
-
-    dio.interceptors.add(
-      LoggingInterceptorProvider.create(
-        logger: logger,
-        enablePretty: config.enablePrettyLogger,
-      ),
-    );
-
-    // Ensure each request stores reference to dio so interceptors (retry) can use it for re-send
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          options.extra['sdk_dio_instance'] = dio;
-          return handler.next(options);
-        },
-      ),
-    );
-
-    return ApiClient._(dio, config, logger, auth);
+  Options _buildOptions([Options? options]) {
+    final token = SdkSession.shared.token;
+    final headers = Map<String, dynamic>.from(options?.headers ?? {});
+    if (token != null && token.isNotEmpty) {
+      headers["Authorization"] = "Bearer $token";
+    }
+    return (options ?? Options()).copyWith(headers: headers);
   }
 
-  /// Update token at runtime (useful after refresh)
-  void updateAccessToken(String? token) => _authInterceptor.updateToken(token);
-
-  Future<T> get<T>(
+  /// GET
+  @override
+  Future<Result> get(
     String path, {
-    Map<String, dynamic>? queryParameters,
-    JsonConverter<T>? converter,
-    Options? options,
-  }) => _request(
-    'GET',
-    path,
-    queryParameters: queryParameters,
-    converter: converter,
-    options: options,
-  );
-
-  Future<T> post<T>(
-    String path, {
-    dynamic data,
-    JsonConverter<T>? converter,
-    Options? options,
-  }) => _request(
-    'POST',
-    path,
-    data: data,
-    converter: converter,
-    options: options,
-  );
-
-  Future<T> put<T>(
-    String path, {
-    dynamic data,
-    JsonConverter<T>? converter,
-    Options? options,
-  }) =>
-      _request('PUT', path, data: data, converter: converter, options: options);
-
-  Future<T> delete<T>(
-    String path, {
-    dynamic data,
-    JsonConverter<T>? converter,
-    Options? options,
-  }) => _request(
-    'DELETE',
-    path,
-    data: data,
-    converter: converter,
-    options: options,
-  );
-
-  Future<T> _request<T>(
-    String method,
-    String path, {
-    Map<String, dynamic>? queryParameters,
-    dynamic data,
-    JsonConverter<T>? converter,
+    SdkModelRequest? queryParameters,
     Options? options,
   }) async {
     try {
-      final resp = await dio.request(
+      final response = await _dio.get(
         path,
-        data: data,
-        queryParameters: queryParameters,
-        options: (options ?? Options()).copyWith(method: method),
+        queryParameters: queryParameters?.toDomain(),
+        options: _buildOptions(options),
       );
-
-      final payload = resp.data;
-      if (converter != null) return converter(payload);
-      return payload as T;
+      return Result(data: response.data, statusCode: response.statusCode);
     } on DioException catch (e) {
-      throw _mapDioError(e);
-    } catch (e) {
-      rethrow;
+      return _handleError(e);
     }
   }
 
-  Exception _mapDioError(DioException e) {
-    // timeout & network
-    if (e.type == DioExceptionType.connectionTimeout ||
-        e.type == DioExceptionType.sendTimeout ||
-        e.type == DioExceptionType.receiveTimeout) {
-      return NetworkException('Request timed out');
+  /// POST
+  @override
+  Future<Result> post(
+    String path,
+    SdkModelRequest? queryParameters, {
+    dynamic? data,
+    Options? options,
+  }) async {
+    try {
+      final response = await _dio.post(
+        path,
+        queryParameters: queryParameters?.toDomain(),
+        data: data,
+        options: _buildOptions(options),
+      );
+      return Result(data: response.data, statusCode: response.statusCode);
+    } on DioException catch (e) {
+      return _handleError(e);
     }
+  }
 
-    if (e.type == DioExceptionType.unknown ||
-        e.type == DioExceptionType.badCertificate) {
-      return NetworkException(e.message ?? 'Network error');
+  /// PUT
+  Future<Result> put(
+    String path,
+    SdkModelRequest? queryParameters, {
+    dynamic data,
+    Options? options,
+  }) async {
+    try {
+      final response = await _dio.put(
+        path,
+        queryParameters: queryParameters?.toDomain(),
+        data: data,
+        options: _buildOptions(options),
+      );
+      return Result(data: response.data, statusCode: response.statusCode);
+    } on DioException catch (e) {
+      return _handleError(e);
     }
+  }
 
-    // If response exists -> ApiException
-    if (e.response != null) {
-      final status = e.response?.statusCode;
-      final data = e.response?.data;
-      String message = e.response?.statusMessage ?? 'API error';
-      try {
-        if (data is Map &&
-            (data['message'] is String || data['error'] is String)) {
-          message = (data['message'] ?? data['error']) as String;
-        } else if (data is String) {
-          message = data;
-        }
-      } catch (_) {
-        // ignore parsing errors
-      }
-      return ApiException(message: message, statusCode: status, body: data);
+  /// DELETE
+  Future<Result> delete(
+    String path,
+    SdkModelRequest? queryParameters, {
+    dynamic data,
+    Options? options,
+  }) async {
+    try {
+      final response = await _dio.delete(
+        path,
+        queryParameters: queryParameters?.toDomain(),
+        data: data,
+        options: _buildOptions(options),
+      );
+      return Result(data: response.data, statusCode: response.statusCode);
+    } on DioException catch (e) {
+      return _handleError(e);
     }
+  }
 
-    // fallback
-    return NetworkException(e.message ?? 'Unknown network error');
+  Result _handleError(DioException e) {
+    return Result(
+      data: {
+        "error": e.message ?? "Network error",
+        "details": e.response?.data,
+      },
+      statusCode: e.response?.statusCode ?? -1,
+    );
   }
 }

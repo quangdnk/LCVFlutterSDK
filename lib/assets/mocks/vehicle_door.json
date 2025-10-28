@@ -1,0 +1,7 @@
+{
+    "data": {
+        "vin": "VIN123456789",
+        "status": "OK"
+    },
+    "statusCode": 200
+}
