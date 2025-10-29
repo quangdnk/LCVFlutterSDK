@@ -52,7 +52,7 @@ extension VehicleServiceExtension on VehicleService {
     await Future.delayed(const Duration(milliseconds: 200));
 
     final jsonStr = await rootBundle.loadString(
-      'packages/LCVFlutterSDK/assets/mocks/vehicle_info.json',
+      'packages/LCVFlutterSDK/assets/mocks/vehicle_door.json',
     );
     final data = jsonDecode(jsonStr) as Map<String, dynamic>;
 
