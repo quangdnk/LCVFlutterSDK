@@ -41,7 +41,7 @@ extension VehicleServiceExtension on VehicleService {
     await Future.delayed(const Duration(milliseconds: 200));
 
     final jsonStr = await rootBundle.loadString(
-      'assets/mocks/vehicle_info.json',
+      'packages/sdk_flutter_mvvm/assets/mocks/vehicle_info.json',
     );
     final data = jsonDecode(jsonStr) as Map<String, dynamic>;
 
@@ -52,7 +52,7 @@ extension VehicleServiceExtension on VehicleService {
     await Future.delayed(const Duration(milliseconds: 200));
 
     final jsonStr = await rootBundle.loadString(
-      'assets/mocks/vehicle_door.json',
+      'packages/sdk_flutter_mvvm/assets/mocks/vehicle_info.json',
     );
     final data = jsonDecode(jsonStr) as Map<String, dynamic>;
 
