@@ -28,14 +28,11 @@ class VehicleService {
     return await _client.get('/vehicles/$vin');
   }
 
-  Future<Result> doorControl(bool status) async {
+  Future<Result> doorControl(VehicleSdkRequest papram) async {
     if (_config.env == Environment.dev) {
       return _mockDoorControl();
     }
-    return await _client.post(
-      "/vehicles",
-      VehicleSdkRequest(vehicleId: vin ?? "0", includeStatus: status),
-    );
+    return await _client.post("/vehicles", papram);
   }
 }
 
@@ -48,14 +45,14 @@ extension VehicleServiceExtension on VehicleService {
     );
     final data = jsonDecode(jsonStr) as Map<String, dynamic>;
 
-    return Result(data: data, statusCode: 200);
+    return Result.fromJson(data);
   }
 
   Future<Result> _mockDoorControl() async {
     await Future.delayed(const Duration(milliseconds: 200));
 
     final jsonStr = await rootBundle.loadString(
-      'assets/mocks/vehicle_info.json',
+      'assets/mocks/vehicle_door.json',
     );
     final data = jsonDecode(jsonStr) as Map<String, dynamic>;
 
