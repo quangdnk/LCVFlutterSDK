@@ -6,7 +6,7 @@ void main() {
 
   test('Load vehicle_info.json mock', () async {
     final jsonString = await rootBundle.loadString(
-      'assets/mocks/vehicle_info.json', // vì đang test trong SDK, không cần prefix packages/
+      'assets/mocks/vehicle_info.json',
     );
     print('JSON loaded: $jsonString');
   });
