@@ -25,7 +25,7 @@ class VehicleService {
     if (_config.env == Environment.dev) {
       return _mockVehicleInfo();
     }
-    return await _client.get('/vehicles/$vin');
+    return await _client.get('/api/hello');
   }
 
   Future<Result> doorControl(VehicleSdkRequest papram) async {
