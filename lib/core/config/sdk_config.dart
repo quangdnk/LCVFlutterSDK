@@ -43,7 +43,7 @@ extension EnvironmentExtension on Environment {
       case Environment.dev:
         return "";
       case Environment.stg:
-        return "https://lcvserverdemo.vercel.app";
+        return "https://lcvserverdemo.onrender.com/";
       case Environment.prod:
         return "";
     }
