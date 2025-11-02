@@ -17,6 +17,15 @@ abstract class IApiClient {
     dynamic data,
     Options? options,
   });
+
+  Future<Result> put(
+    String path,
+    SdkModelRequest? queryParameters, {
+    dynamic data,
+    Options? options,
+  });
+
+  Future<Result> delete(String path, {Options? options});
 }
 
 class ApiClient implements IApiClient {
@@ -82,6 +91,7 @@ class ApiClient implements IApiClient {
   }
 
   /// PUT
+  @override
   Future<Result> put(
     String path,
     SdkModelRequest? queryParameters, {
@@ -102,19 +112,10 @@ class ApiClient implements IApiClient {
   }
 
   /// DELETE
-  Future<Result> delete(
-    String path,
-    SdkModelRequest? queryParameters, {
-    dynamic data,
-    Options? options,
-  }) async {
+  @override
+  Future<Result> delete(String path, {Options? options}) async {
     try {
-      final response = await _dio.delete(
-        path,
-        queryParameters: queryParameters?.toDomain(),
-        data: data,
-        options: _buildOptions(options),
-      );
+      final response = await _dio.delete(path, options: _buildOptions(options));
       return Result(data: response.data, statusCode: response.statusCode);
     } on DioException catch (e) {
       return _handleError(e);
