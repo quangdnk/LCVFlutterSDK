@@ -2,6 +2,7 @@ import 'package:LCVFlutterSDK/core/constants/http_constants.dart';
 import 'package:LCVFlutterSDK/core/models/sdk_model_request.dart';
 import 'package:LCVFlutterSDK/core/network/result.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../config/sdk_config.dart';
 import '../config/sdk_session.dart';
 
@@ -63,7 +64,7 @@ class ApiClient implements IApiClient {
         queryParameters: queryParameters?.toDomain(),
         options: _buildOptions(options),
       );
-      return Result(data: response.data, statusCode: response.statusCode);
+      return Result.fromJson(response.data);
     } on DioException catch (e) {
       return _handleError(e);
     }
@@ -84,7 +85,7 @@ class ApiClient implements IApiClient {
         data: data,
         options: _buildOptions(options),
       );
-      return Result(data: response.data, statusCode: response.statusCode);
+      return Result.fromJson(response.data);
     } on DioException catch (e) {
       return _handleError(e);
     }
@@ -105,7 +106,7 @@ class ApiClient implements IApiClient {
         data: data,
         options: _buildOptions(options),
       );
-      return Result(data: response.data, statusCode: response.statusCode);
+      return Result.fromJson(response.data);
     } on DioException catch (e) {
       return _handleError(e);
     }
@@ -116,7 +117,7 @@ class ApiClient implements IApiClient {
   Future<Result> delete(String path, {Options? options}) async {
     try {
       final response = await _dio.delete(path, options: _buildOptions(options));
-      return Result(data: response.data, statusCode: response.statusCode);
+      return Result.fromJson(response.data);
     } on DioException catch (e) {
       return _handleError(e);
     }
