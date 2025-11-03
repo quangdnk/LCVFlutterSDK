@@ -4,7 +4,7 @@ import 'package:LCVFlutterSDK/core/models/sdk_model_request.dart';
 class ReservationItemSdkRequest extends SdkModelRequest {
   final int reservationNo;
   final bool activeStatus;
-  final Repetition repetition;
+  final RepetitionSDK repetition;
   ReservationItemSdkRequest(
     this.repetition, {
     required this.reservationNo,
@@ -21,13 +21,13 @@ class ReservationItemSdkRequest extends SdkModelRequest {
   }
 }
 
-class Repetition extends SdkModelRequest {
+class RepetitionSDK extends SdkModelRequest {
   final List<Map<int, int>> week;
   final int hour;
   final int min;
   final ReservationSettingSdkRequest setting;
 
-  Repetition({
+  RepetitionSDK({
     required this.week,
     required this.hour,
     required this.min,
