@@ -8,8 +8,8 @@ class ReservationSettingSdkRequest extends SdkModelRequest {
   final bool frontDefogger;
   final bool rearDefogger;
   final bool shVlType;
-  final ReservationSeatSetting shSettings;
-  final ReservationSeatSetting vlSettings;
+  // final ReservationSeatSetting shSettings;
+  // final ReservationSeatSetting vlSettings;
 
   ReservationSettingSdkRequest({
     required this.temperature,
@@ -17,8 +17,8 @@ class ReservationSettingSdkRequest extends SdkModelRequest {
     required this.frontDefogger,
     required this.rearDefogger,
     required this.shVlType,
-    required this.shSettings,
-    required this.vlSettings,
+    // required this.shSettings,
+    // required this.vlSettings,
   });
 
   @override
@@ -29,8 +29,8 @@ class ReservationSettingSdkRequest extends SdkModelRequest {
       "frontDefogger": steering,
       "rearDefogger": rearDefogger,
       "shVlType": shVlType,
-      "shSettings": shSettings.toDomain(),
-      "vlSettings": vlSettings.toDomain(),
+      // "shSettings": shSettings.toDomain(),
+      // "vlSettings": vlSettings.toDomain(),
     };
   }
 }
