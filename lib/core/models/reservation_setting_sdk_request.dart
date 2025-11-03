@@ -24,11 +24,11 @@ class ReservationSettingSdkRequest extends SdkModelRequest {
   @override
   Map<String, dynamic> toDomain() {
     return {
-      temperature: temperature,
-      "steering": steering,
-      "frontDefogger": steering,
-      "rearDefogger": rearDefogger,
-      "shVlType": shVlType,
+      "Temperature": temperature,
+      "Steering": steering,
+      "FrontDefogger": steering,
+      "RearDefogger": rearDefogger,
+      "ShVlType": shVlType,
       // "shSettings": shSettings.toDomain(),
       // "vlSettings": vlSettings.toDomain(),
     };
