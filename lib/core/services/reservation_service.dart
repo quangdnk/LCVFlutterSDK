@@ -41,6 +41,6 @@ class ReservationService {
   Future<Result> setReservationSetting(
     ReservationSettingSdkRequest param,
   ) async {
-    return await _client.put("api/reservation/set", param);
+    return await _client.put("/api/reservation/set", param);
   }
 }
