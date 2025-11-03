@@ -5,8 +5,8 @@ class ReservationItemSdkRequest extends SdkModelRequest {
   final int reservationNo;
   final bool activeStatus;
   final RepetitionSDK repetition;
-  ReservationItemSdkRequest(
-    this.repetition, {
+  ReservationItemSdkRequest({
+    required this.repetition,
     required this.reservationNo,
     required this.activeStatus,
   });
