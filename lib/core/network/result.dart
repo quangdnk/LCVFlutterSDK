@@ -5,11 +5,7 @@ class Result {
   const Result({this.data, this.statusCode});
 
   factory Result.fromJson(Map<String, dynamic> json) {
-    return Result(
-      data:
-          json['data'] != null ? Map<String, dynamic>.from(json['data']) : null,
-      statusCode: json['statusCode'] as int?,
-    );
+    return Result(data: json['data'], statusCode: json['statusCode'] as int?);
   }
 
   Map<String, dynamic> toJson() {
