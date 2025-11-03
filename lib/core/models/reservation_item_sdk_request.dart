@@ -22,7 +22,7 @@ class ReservationItemSdkRequest extends SdkModelRequest {
 }
 
 class RepetitionSDK extends SdkModelRequest {
-  final List<Map<int, int>> week;
+  final List<int> week;
   final int hour;
   final int min;
   final ReservationSettingSdkRequest setting;
