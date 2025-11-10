@@ -12,7 +12,6 @@ class SdkSession {
 
   String? vinId;
 
-  /// Reset session khi logout
   void clear() {
     token = null;
     userId = null;

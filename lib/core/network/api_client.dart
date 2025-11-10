@@ -2,31 +2,31 @@ import 'package:LCVFlutterSDK/core/constants/http_constants.dart';
 import 'package:LCVFlutterSDK/core/models/sdk_model_request.dart';
 import 'package:LCVFlutterSDK/core/network/result.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import '../config/sdk_config.dart';
 import '../config/sdk_session.dart';
+import 'package:uuid/uuid.dart';
 
 abstract class IApiClient {
-  Future<Result> get(
+  Future<SDKResult> get(
     String path, {
     SdkModelRequest? queryParameters,
     Options? options,
   });
-  Future<Result> post(
+  Future<SDKResult> post(
     String path,
     SdkModelRequest? queryParameters, {
     dynamic data,
     Options? options,
   });
 
-  Future<Result> put(
+  Future<SDKResult> put(
     String path,
     SdkModelRequest? queryParameters, {
     dynamic data,
     Options? options,
   });
 
-  Future<Result> delete(String path, {Options? options});
+  Future<SDKResult> delete(String path, {Options? options});
 }
 
 class ApiClient implements IApiClient {
@@ -38,13 +38,14 @@ class ApiClient implements IApiClient {
           baseUrl: config.env.endpoint(),
           connectTimeout: config.timeout,
           receiveTimeout: config.timeout,
-          headers: HttpConstants.defaultHeaders,
+          headers: {...HttpConstants.defaultHeaders, ...?config.headers},
         ),
       );
 
   Options _buildOptions([Options? options]) {
     final token = SdkSession.shared.token;
     final headers = Map<String, dynamic>.from(options?.headers ?? {});
+    headers["correlation-id"] = Uuid().v4();
     if (token != null && token.isNotEmpty) {
       headers["Authorization"] = "Bearer $token";
     }
@@ -53,7 +54,7 @@ class ApiClient implements IApiClient {
 
   /// GET
   @override
-  Future<Result> get(
+  Future<SDKResult> get(
     String path, {
     SdkModelRequest? queryParameters,
     Options? options,
@@ -64,7 +65,7 @@ class ApiClient implements IApiClient {
         queryParameters: queryParameters?.toDomain(),
         options: _buildOptions(options),
       );
-      return Result.fromJson(response.data);
+      return SDKResult.fromJson(response.data);
     } on DioException catch (e) {
       return _handleError(e);
     }
@@ -72,7 +73,7 @@ class ApiClient implements IApiClient {
 
   /// POST
   @override
-  Future<Result> post(
+  Future<SDKResult> post(
     String path,
     SdkModelRequest? queryParameters, {
     dynamic data,
@@ -85,7 +86,7 @@ class ApiClient implements IApiClient {
         data: data,
         options: _buildOptions(options),
       );
-      return Result.fromJson(response.data);
+      return SDKResult.fromJson(response.data);
     } on DioException catch (e) {
       return _handleError(e);
     }
@@ -93,7 +94,7 @@ class ApiClient implements IApiClient {
 
   /// PUT
   @override
-  Future<Result> put(
+  Future<SDKResult> put(
     String path,
     SdkModelRequest? queryParameters, {
     dynamic data,
@@ -106,7 +107,7 @@ class ApiClient implements IApiClient {
         data: data,
         options: _buildOptions(options),
       );
-      return Result.fromJson(response.data);
+      return SDKResult.fromJson(response.data);
     } on DioException catch (e) {
       return _handleError(e);
     }
@@ -114,17 +115,17 @@ class ApiClient implements IApiClient {
 
   /// DELETE
   @override
-  Future<Result> delete(String path, {Options? options}) async {
+  Future<SDKResult> delete(String path, {Options? options}) async {
     try {
       final response = await _dio.delete(path, options: _buildOptions(options));
-      return Result.fromJson(response.data);
+      return SDKResult.fromJson(response.data);
     } on DioException catch (e) {
       return _handleError(e);
     }
   }
 
-  Result _handleError(DioException e) {
-    return Result(
+  SDKResult _handleError(DioException e) {
+    return SDKResult(
       data: {
         "error": e.message ?? "Network error",
         "details": e.response?.data,

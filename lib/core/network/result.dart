@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class Result {
+class SDKResult {
   final Map<String, dynamic>? data;
   final int? statusCode;
 
-  const Result({this.data, this.statusCode});
+  const SDKResult({this.data, this.statusCode});
 
-  factory Result.fromJson(Map<String, dynamic> json) {
+  factory SDKResult.fromJson(Map<String, dynamic> json) {
     debugPrint(json.toString());
-    return Result(
+    return SDKResult(
       data:
           json['data'] != null ? Map<String, dynamic>.from(json['data']) : null,
       statusCode: json['statusCode'] as int?,

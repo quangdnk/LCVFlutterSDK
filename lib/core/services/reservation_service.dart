@@ -16,29 +16,29 @@ class ReservationService {
     return _instance!;
   }
 
-  Future<Result> getReservation() async {
+  Future<SDKResult> getReservation() async {
     return await _client.get("/api/reservation");
   }
 
-  Future<Result> newReservation(ReservationItemSdkRequest param) async {
+  Future<SDKResult> newReservation(ReservationItemSdkRequest param) async {
     return await _client.post("/api/reservation", param);
   }
 
-  Future<Result> editReservation(ReservationItemSdkRequest param) async {
+  Future<SDKResult> editReservation(ReservationItemSdkRequest param) async {
     final id = param.reservationNo;
     return await _client.put("/api/reservation/$id", param);
   }
 
-  Future<Result> deleteReservation(int id) async {
+  Future<SDKResult> deleteReservation(int id) async {
     return await _client.delete("/api/reservation/$id");
   }
 
   /// RESERVATION SETTING
-  Future<Result> getResetvationSetting() async {
+  Future<SDKResult> getResetvationSetting() async {
     return await _client.get("/api/reservation/set");
   }
 
-  Future<Result> setReservationSetting(
+  Future<SDKResult> setReservationSetting(
     ReservationSettingSdkRequest param,
   ) async {
     return await _client.put("/api/reservation/set", param);

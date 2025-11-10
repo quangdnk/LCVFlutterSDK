@@ -21,14 +21,14 @@ class VehicleService {
     return _instance!;
   }
 
-  Future<Result> getVehicleInfo() async {
+  Future<SDKResult> getVehicleInfo() async {
     if (_config.env == Environment.dev) {
       return _mockVehicleInfo();
     }
     return await _client.get('/api/hello');
   }
 
-  Future<Result> doorControl(VehicleSdkRequest papram) async {
+  Future<SDKResult> doorControl(VehicleSdkRequest papram) async {
     if (_config.env == Environment.dev) {
       return _mockDoorControl();
     }
@@ -37,7 +37,7 @@ class VehicleService {
 }
 
 extension VehicleServiceExtension on VehicleService {
-  Future<Result> _mockVehicleInfo() async {
+  Future<SDKResult> _mockVehicleInfo() async {
     await Future.delayed(const Duration(milliseconds: 200));
 
     final jsonStr = await rootBundle.loadString(
@@ -45,10 +45,10 @@ extension VehicleServiceExtension on VehicleService {
     );
     final data = jsonDecode(jsonStr) as Map<String, dynamic>;
 
-    return Result.fromJson(data);
+    return SDKResult.fromJson(data);
   }
 
-  Future<Result> _mockDoorControl() async {
+  Future<SDKResult> _mockDoorControl() async {
     await Future.delayed(const Duration(milliseconds: 200));
 
     final jsonStr = await rootBundle.loadString(
@@ -56,6 +56,6 @@ extension VehicleServiceExtension on VehicleService {
     );
     final data = jsonDecode(jsonStr) as Map<String, dynamic>;
 
-    return Result.fromJson(data);
+    return SDKResult.fromJson(data);
   }
 }
