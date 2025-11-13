@@ -21,7 +21,7 @@ class ReservationService {
   }
 
   Future<SDKResult> newReservation(ReservationItemSdkRequest param) async {
-    return await _client.post("/api/reservation", param);
+    return await _client.post("/api/reservation", queryParameters: param);
   }
 
   Future<SDKResult> editReservation(ReservationItemSdkRequest param) async {

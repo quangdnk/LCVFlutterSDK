@@ -1,24 +1,13 @@
+import 'package:LCVFlutterSDK/core/models/common/sdk_model_common.dart';
 import 'package:LCVFlutterSDK/core/models/sdk_model_request.dart';
-import 'package:LCVFlutterSDK/sdk_api.dart';
 
 class RemoteDoorSdkRequest extends SdkModelRequest {
-  final String status;
-  final String security;
-  final String doorId;
+  final DoorStatusSdk _status;
 
-  RemoteDoorSdkRequest({
-    required this.status,
-    required this.security,
-    required this.doorId,
-  });
+  RemoteDoorSdkRequest({required status}) : _status = status;
 
   @override
   Map<String, dynamic> toDomain() {
-    return {
-      "Status": status,
-      "Security": security,
-      "DoorId": doorId,
-      "MemberId": SdkSession.shared.userId,
-    };
+    return {"Status": _status};
   }
 }

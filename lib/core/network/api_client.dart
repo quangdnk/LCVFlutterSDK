@@ -1,9 +1,10 @@
+import 'package:LCVFlutterSDK/core/config/sdk_config.dart';
+import 'package:LCVFlutterSDK/core/config/sdk_session.dart';
 import 'package:LCVFlutterSDK/core/constants/http_constants.dart';
 import 'package:LCVFlutterSDK/core/models/sdk_model_request.dart';
 import 'package:LCVFlutterSDK/core/network/result.dart';
 import 'package:dio/dio.dart';
-import '../config/sdk_config.dart';
-import '../config/sdk_session.dart';
+
 import 'package:uuid/uuid.dart';
 
 abstract class IApiClient {
@@ -13,8 +14,8 @@ abstract class IApiClient {
     Options? options,
   });
   Future<SDKResult> post(
-    String path,
-    SdkModelRequest? queryParameters, {
+    String path, {
+    SdkModelRequest? queryParameters,
     dynamic data,
     Options? options,
   });
@@ -74,8 +75,8 @@ class ApiClient implements IApiClient {
   /// POST
   @override
   Future<SDKResult> post(
-    String path,
-    SdkModelRequest? queryParameters, {
+    String path, {
+    SdkModelRequest? queryParameters,
     dynamic data,
     Options? options,
   }) async {

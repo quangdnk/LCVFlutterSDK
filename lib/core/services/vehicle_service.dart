@@ -32,7 +32,7 @@ class VehicleService {
     if (_config.env == Environment.dev) {
       return _mockDoorControl();
     }
-    return await _client.post("/vehicles", papram);
+    return await _client.post("/vehicles", queryParameters: papram);
   }
 }
 
