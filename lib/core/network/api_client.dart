@@ -46,7 +46,6 @@ class ApiClient implements IApiClient {
   Options _buildOptions([Options? options]) {
     final token = SdkSession.shared.token;
     final headers = Map<String, dynamic>.from(options?.headers ?? {});
-    headers["correlation-id"] = Uuid().v4();
     if (token != null && token.isNotEmpty) {
       headers["Authorization"] = "Bearer $token";
     }

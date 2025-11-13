@@ -12,14 +12,14 @@ enum DoorStatusSdk { lock, unlock }
 
 enum SecuritySdk { on, off }
 
-enum LightSdk { off, cancelOff }
+enum LightStatusSdk { off, cancelOff }
 
-extension LightSdkExtension on LightSdk {
+extension LightStatusSdkExtension on LightStatusSdk {
   String title() {
     switch (this) {
-      case LightSdk.off:
+      case LightStatusSdk.off:
         return "Off";
-      case LightSdk.cancelOff:
+      case LightStatusSdk.cancelOff:
         return "CancelOff";
     }
   }
