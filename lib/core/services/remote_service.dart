@@ -8,7 +8,7 @@ import 'package:LCVFlutterSDK/core/network/result.dart';
 
 class RemoteService {
   final ApiClient _client;
-  final vin = SdkSession.shared.vinId;
+  String get vin => SdkSession.shared.vinId ?? "";
 
   RemoteService._internal(this._client);
 

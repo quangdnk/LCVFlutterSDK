@@ -39,7 +39,12 @@ class ApiClient implements IApiClient {
           baseUrl: config.env.endpoint(),
           connectTimeout: config.timeout,
           receiveTimeout: config.timeout,
-          headers: {...HttpConstants.defaultHeaders, ...?config.headers},
+          headers: {
+            ...HttpConstants.defaultHeaders,
+            ...?config.headers,
+            'x-api-key': config.xApiKey,
+            'app-version': config.appVersion,
+          },
         ),
       );
 
@@ -47,7 +52,7 @@ class ApiClient implements IApiClient {
     final token = SdkSession.shared.token;
     final headers = Map<String, dynamic>.from(options?.headers ?? {});
     if (token != null && token.isNotEmpty) {
-      headers["Authorization"] = "Bearer $token";
+      headers["access-token"] = token;
     }
     return (options ?? Options()).copyWith(headers: headers);
   }
