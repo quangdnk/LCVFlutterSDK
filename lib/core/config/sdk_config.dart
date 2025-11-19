@@ -13,21 +13,6 @@ class SdkConfig {
     this.timeout = const Duration(seconds: 15),
     this.headers,
   });
-
-  SdkConfig copyWith({
-    String? baseUrl,
-    Duration? timeout,
-    bool? enableLogging,
-    Map<String, dynamic>? headers,
-  }) {
-    return SdkConfig(
-      env: env,
-      timeout: timeout ?? this.timeout,
-      headers: this.headers,
-      appVersion: appVersion,
-      xApiKey: xApiKey,
-    );
-  }
 }
 
 enum Environment { dev, stg, prod }

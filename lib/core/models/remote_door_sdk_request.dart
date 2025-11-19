@@ -8,6 +8,6 @@ class RemoteDoorSdkRequest extends SdkModelRequest {
 
   @override
   Map<String, dynamic> toDomain() {
-    return {"Status": _status};
+    return {"Status": _status.title()};
   }
 }

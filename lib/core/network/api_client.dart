@@ -5,8 +5,6 @@ import 'package:LCVFlutterSDK/core/models/sdk_model_request.dart';
 import 'package:LCVFlutterSDK/core/network/result.dart';
 import 'package:dio/dio.dart';
 
-import 'package:uuid/uuid.dart';
-
 abstract class IApiClient {
   Future<SDKResult> get(
     String path, {
